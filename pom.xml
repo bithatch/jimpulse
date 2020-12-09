@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>uk.co.bithatch</groupId>
+
+	<name>JImpulse</name>
+	<description>A Java port of the impulse library https://launchpad.net/impulse.bzr. For Linux only, requires libpulse and libfftw-3. Captures output from PulseAudio system and delivers transformed snapshots optionally using Fast Fourier Transforms. The data collected may then be used to create visual effects based on sound levels of various frequencies.</description>
+	<artifactId>jimpulse</artifactId>
+	<version>0.1-SNAPSHOT</version>
+
+	<url>https://github.com/bithatch/jimpulse</url>
+
+	<!-- Output to jar format -->
+	<packaging>jar</packaging>
+
+	<properties>
+		<maven.compiler.source>9</maven.compiler.source>
+		<maven.compiler.target>9</maven.compiler.target>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<licenses>
+		<license>
+			<name>GNU GENERAL PUBLIC LICENSE Version 3</name>
+			<url>https://www.gnu.org/licenses/gpl-3.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	<scm>
+		<url>https://github.com/bithatch/jimpulse</url>
+		<connection>scm:git:https://github.com/bithatch/jimpulse.git</connection>
+		<developerConnection>scm:git:https://github.com/bithatch/jimpulse.git</developerConnection>
+	</scm>
+	<developers>
+		<developer>
+			<id>brett</id>
+			<name>Brett Smith</name>
+			<email>tanktarta@gmail.com</email>
+		</developer>
+	</developers>
+	<inceptionYear>2020</inceptionYear>
+	<organization>
+		<name>Bithatch</name>
+		<url>http://bithatch.co.uk</url>
+	</organization>
+
+	<distributionManagement>
+		<snapshotRepository>
+			<id>ossrh-bithatch</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</snapshotRepository>
+		<repository>
+			<id>ossrh-bithatch</id>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+		</repository>
+	</distributionManagement>
+
+	<build>
+		<sourceDirectory>${project.basedir}/src/main/java</sourceDirectory>
+		<resources>
+			<resource>
+				<directory>${project.basedir}/src/main/resources</directory>
+			</resource>
+		</resources>
+		<!-- <testSourceDirectory>testing</testSourceDirectory> -->
+		<plugins>
+
+			<!-- Source Code Plugin -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>3.0.1</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- JavaDoc Plugin -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>3.2.0</version>
+				<executions>
+					<execution>
+						<id>release</id>
+						<phase>package</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<!-- <skip>true</skip> -->
+					<encoding>UTF-8</encoding>
+					<excludePackageNames>**.impl.*</excludePackageNames>
+					<!-- https://stackoverflow.com/questions/49472783/maven-is-unable-to-find-javadoc-command -->
+					<javadocExecutable>${java.home}/bin/javadoc</javadocExecutable>
+
+					<!-- https://bugs.openjdk.java.net/browse/JDK-8212233 -->
+					<source>8</source>
+				</configuration>
+			</plugin>
+
+			<!-- Maven Compiler Plugin -->
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.8.1</version>
+				<executions>
+					<execution>
+						<id>compile8</id>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+						<configuration>
+							<compilerArgs>
+								<arg>-h</arg>
+								<arg>${project.basedir}/src/main/native</arg>
+							</compilerArgs>
+							<source>1.8</source>
+							<target>1.8</target>
+						</configuration>
+					</execution>
+					<execution>
+						<id>compile9</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+						<configuration>
+							<release>9</release>
+							<compileSourceRoots>
+								<compileSourceRoot>${project.basedir}/src/main/java</compileSourceRoot>
+								<compileSourceRoot>${project.basedir}/src/main/java9</compileSourceRoot>
+							</compileSourceRoots>
+							<multiReleaseOutput>true</multiReleaseOutput>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- Make this jar executable -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>3.2.0</version>
+				<configuration>
+					<archive>
+						<manifest>
+							<addClasspath>true</addClasspath>
+							<mainClass>uk.co.bithatch.jimpulse.Monitor</mainClass>
+						</manifest>
+						<manifestEntries>
+							<Multi-Release>true</Multi-Release>
+						</manifestEntries>
+					</archive>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-gpg-plugin</artifactId>
+				<version>1.6</version>
+				<executions>
+					<execution>
+						<id>sign-artifacts</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>sign</goal>
+						</goals>
+						<configuration>
+							<gpgArguments>
+								<arg>--pinentry-mode</arg>
+								<arg>loopback</arg>
+							</gpgArguments>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.sonatype.plugins</groupId>
+				<artifactId>nexus-staging-maven-plugin</artifactId>
+				<version>1.6.8</version>
+				<extensions>true</extensions>
+				<configuration>
+					<serverId>ossrh-bithatch</serverId>
+					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
+					<autoReleaseAfterClose>true</autoReleaseAfterClose>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>3.0.0</version>
+				<configuration>
+					<mainClass>uk.co.bithatch.jimpulse.Monitor</mainClass>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>com.mycila</groupId>
+				<artifactId>license-maven-plugin</artifactId>
+				<version>3.0</version>
+				<configuration>
+					<header>src/main/templates/GPL-3.txt</header>
+					<properties>
+						<owner>Bithatch</owner>
+						<email>tanktarta@gmail.com</email>
+					</properties>
+					<excludes>
+						<exclude>**/README</exclude>
+						<exclude>pom.xml</exclude>
+						<exclude>src/test/resources/**</exclude>
+						<exclude>src/main/resources/**</exclude>
+					</excludes>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>format</goal>
+						</goals>
+						<id>licenses</id>
+						<phase>process-sources</phase>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+	<profiles>
+		<profile>
+			<id>linux-amd64</id>
+			<activation>
+				<os>
+					<family>linux</family>
+					<arch>amd64</arch>
+				</os>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>exec-maven-plugin</artifactId>
+						<configuration>
+							<arguments>
+								<argument>-Djava.library.path=${basedir}/target/nar/${project.artifactId}-${project.version}-amd64-Linux-gpp-shared/lib/amd64-Linux-gpp/shared</argument>
+							</arguments>
+							<mainClass>uk.co.bithatch.jimpulse.Monitor</mainClass>
+						</configuration>
+					</plugin>
+					<plugin>
+						<groupId>com.github.maven-nar</groupId>
+						<artifactId>nar-maven-plugin</artifactId>
+						<version>3.10.1</version>
+						<extensions>true</extensions>
+
+						<executions>
+							<execution>
+								<id>compile-native-amd64</id>
+								<phase>compile</phase>
+								<goals>
+									<goal>nar-compile</goal>
+								</goals>
+								<configuration>
+									<architecture>amd64</architecture>
+									<libraries>
+										<library>
+											<type>shared</type>
+										</library>
+									</libraries>
+									<linker>
+										<libSet>pulse fftw3</libSet>
+									</linker>
+									<c>
+										<includePaths>
+											<includePath>/usr/include/x86_64-linux-gnu</includePath>
+											<includePath>${java.home}/include</includePath>
+											<includePath>${java.home}/include/linux</includePath>
+											<includePath>${project.basedir}/src/main/native</includePath>
+										</includePaths>
+										<sourceDirectory>src/main/native</sourceDirectory>
+										<includes>
+											<include>*.c</include>
+										</includes>
+									</c>
+								</configuration>
+							</execution>
+
+						</executions>
+
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<version>1.8</version>
+
+						<executions>
+							<execution>
+								<id>copy-linux-natives</id>
+								<phase>compile</phase>
+								<goals>
+									<goal>run</goal>
+								</goals>
+								<configuration>
+									<target>
+										<copy
+											tofile="${basedir}/target/classes/uk/co/bithatch/jimpulse/linux/x86_64/libjimpulse.so"
+											file="${basedir}/target/nar/${project.artifactId}-${project.version}-amd64-Linux-gpp-shared/lib/amd64-Linux-gpp/shared/lib${project.artifactId}-${project.version}.so" />
+									</target>
+								</configuration>
+							</execution>
+							<execution>
+								<id>remove-linux-natives</id>
+								<phase>clean</phase>
+								<goals>
+									<goal>run</goal>
+								</goals>
+								<configuration>
+									<target>
+										<delete
+											file="${basedir}/target/classes/uk/co/bithatch/jimpulse/linux/x86_64/libjimpulse.so" />
+									</target>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
+	<dependencies>
+	</dependencies>
+</project>
+
