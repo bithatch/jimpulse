@@ -31,6 +31,11 @@ JNIEXPORT void JNICALL Java_uk_co_bithatch_jimpulse_Impulse_initImpulse
   im_start();
 }
 
+JNIEXPORT void JNICALL Java_uk_co_bithatch_jimpulse_Impulse_stop
+  (JNIEnv *env, jobject object) {
+  im_stop();
+}
+
 JNIEXPORT jdoubleArray JNICALL Java_uk_co_bithatch_jimpulse_Impulse_getSnapshot
   (JNIEnv *env, jobject object, jboolean fft) {
 	double *m = im_getSnapshot( fft );

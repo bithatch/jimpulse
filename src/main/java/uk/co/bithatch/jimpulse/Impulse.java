@@ -1,5 +1,5 @@
 /**
- * JImpulse - A Java port of impulse.
+ * JImpulse - A Java port of impulse. 
  * Copyright © 2020 Bithatch (tanktarta@gmail.com)
  *
  * This program is free software: you can redistribute it and/or modify
@@ -25,13 +25,15 @@ import java.net.URL;
 
 /**
  * Start a new capture of data from Pulse Audio. To use, created a new
- * {@link #Impulse()} instance, and invoke {@#initImpulse()}. Then you may then
+ * {@link #Impulse()} instance, and invoke {@link #initImpulse()}. Then you may then
  * call {@link #getSnapshot(boolean)} at any time to get the current snapshot.
  * This method accepts a parameter which enables Fast Fourier Transform on the
  * data. See the source <code>Impulse.c</code> for the algorithm used.
  * <p>
  * You can select an alternative Pulse sourcce by
  * using{@link #setSourceIndex(int)}.
+ * <p>
+ * Don't forget to call {@link #stop()} when you are done.
  */
 public class Impulse {
 
@@ -54,6 +56,11 @@ public class Impulse {
 	 * Inits the impulse.
 	 */
 	public native void initImpulse();
+
+	/**
+	 * Stops the impulse.
+	 */
+	public native void stop();
 
 	/**
 	 * Gets the snapshot. Call this at a fixed rate to analyse the sound stream. The
