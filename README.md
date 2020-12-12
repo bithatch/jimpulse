@@ -15,7 +15,7 @@ If you are building this project from source, you will also need the `-dev` pack
 
 ### The Java Bit
 
-The library will be available in Maven Central, but for now is available from the SNAPSHOT repository.
+The library is available in Maven Central.
 
 ### Maven
 
@@ -23,7 +23,17 @@ The library will be available in Maven Central, but for now is available from th
 	<dependency>
 		<groupId>uk.co.bithatch</groupId>
 		<artifactId>jimpulse</artifactId>
-		<version>0.1-SNAPSHOT</version>
+		<version>1.0</version>
+	</dependency>
+```
+
+Development versions (when available), will be the next version number, suffixed with -SNAPSHOT).
+
+```xml
+	<dependency>
+		<groupId>uk.co.bithatch</groupId>
+		<artifactId>jimpulse</artifactId>
+		<version>1.1-SNAPSHOT</version>
 	</dependency>
 ```
 
