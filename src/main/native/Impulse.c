@@ -55,7 +55,7 @@ static void quit( int ret ) {
 }
 
 static void unmute_source_success_cb( pa_context *c, int success, void *userdata ) {
-	printf("unmute: %d\n", success);
+//	printf("unmute: %d\n", success);
 }
 
 static void get_source_info_callback( pa_context *c, const pa_source_info *i, int is_last, void *userdata ) {
@@ -63,12 +63,12 @@ static void get_source_info_callback( pa_context *c, const pa_source_info *i, in
 	if ( !i )
 		return;
 
-	printf("source index: %u\n", i->index );
+//	printf("source index: %u\n", i->index );
 
 	// snprintf(t, sizeof(t), "%u", i->monitor_of_sink);
 
 //	if ( i->monitor_of_sink != PA_INVALID_INDEX ) {
-		puts( i->name );
+//		puts( i->name );
 	//	if ( device && strcmp( device, i->name ) == 0 ) return;
 
 		device = pa_xstrdup( i->name );
