@@ -167,8 +167,8 @@ static void context_state_callback( pa_context *c, void *userdata ) {
 }
 
 void im_stop (void) {
-
-	pa_threaded_mainloop_stop( mainloop );
+	if(mainloop != NULL)
+		pa_threaded_mainloop_stop( mainloop );
 
 	//printf( "exit\n" );
 }
